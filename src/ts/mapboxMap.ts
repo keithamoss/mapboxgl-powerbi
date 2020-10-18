@@ -166,38 +166,38 @@ module powerbi.extensibility.visual {
       // If the map container doesn't exist yet, create it
       this.map = new mapboxgl.Map(mapOptions);
 
-      this.map.on(
-        "styledata",
-        function () {
-          this.layers = [];
-          this.layers.push(new Raster(this));
-          this.layers.push(new Heatmap(this));
-          this.layers.push(
-            new Cluster(this, () => {
-              return this.roleMap.cluster.displayName;
-            })
-          );
-          this.layers.push(new Circle(this, this.filter, this.palette));
-          this.layers.push(new Choropleth(this, this.filter, this.palette));
-          mapboxgl.config.API_URL = this.settings.api.apiUrl;
+      //   this.map.on(
+      //     "styledata",
+      //     function (mapdataevent) {
+      this.layers = [];
+      this.layers.push(new Raster(this));
+      this.layers.push(new Heatmap(this));
+      this.layers.push(
+        new Cluster(this, () => {
+          return this.roleMap.cluster.displayName;
+        })
+      );
+      this.layers.push(new Circle(this, this.filter, this.palette));
+      this.layers.push(new Choropleth(this, this.filter, this.palette));
+      mapboxgl.config.API_URL = this.settings.api.apiUrl;
 
-          this.filter.manageHandlers();
-          this.drawControl.manageHandlers(this);
+      this.filter.manageHandlers();
+      this.drawControl.manageHandlers(this);
 
-          this.map.on("zoom", () => {
-            const newZoom = Math.floor(this.map.getZoom());
-            if (this.previousZoom != newZoom) {
-              this.previousZoom = newZoom;
-              this.layers.map((layer) => {
-                if (layer.handleZoom(this.settings)) {
-                  layer.applySettings(this.settings, this.roleMap);
-                }
-              });
-              this.updateLegend(this.settings);
+      this.map.on("zoom", () => {
+        const newZoom = Math.floor(this.map.getZoom());
+        if (this.previousZoom != newZoom) {
+          this.previousZoom = newZoom;
+          this.layers.map((layer) => {
+            if (layer.handleZoom(this.settings)) {
+              layer.applySettings(this.settings, this.roleMap);
             }
           });
-        }.bind(this)
-      );
+          this.updateLegend(this.settings);
+        }
+      });
+      //     }.bind(this)
+      //   );
     }
 
     private removeMap() {
